@@ -11,7 +11,7 @@ public class Interfaz extends JFrame implements ActionListener {
     private JPanel panelMatriz;
     private JLabel celda[][];
     private JLabel tiempoSecuencial, tiempoJorkJoin, tiempoExecutor;
-    private JButton inicializar, regresar, avanzarSecuencial, avanzarJorkJoin, avanzarExecutor;
+    private JButton llenar, regresar, avanzarSecuencial, avanzarJorkJoin, avanzarExecutor;
     public Interfaz(int dimensiones, Controlador controlador) {
         setTitle("Juego de la vida");
         setSize(775, 455);
@@ -27,6 +27,7 @@ public class Interfaz extends JFrame implements ActionListener {
         setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
+        new Refresh(this).start();
     }
 
     private void crearControles() {
@@ -43,10 +44,10 @@ public class Interfaz extends JFrame implements ActionListener {
         add(regresar);
         regresar.addActionListener(this);
 
-        inicializar = new JButton("Inicializar");
-        inicializar.setBounds(200, 25, 150, 50);
-        add(inicializar);
-        inicializar.addActionListener(this);
+        llenar = new JButton("Llenar");
+        llenar.setBounds(200, 25, 150, 50);
+        add(llenar);
+        llenar.addActionListener(this);
 
         avanzarSecuencial = new JButton("Avanzar Secuencial");
         avanzarSecuencial.setBounds(25, 100, 325, 50);
@@ -91,7 +92,7 @@ public class Interfaz extends JFrame implements ActionListener {
         }
     }
 
-    private void actualizarTablero() {
+    public void actualizarTablero() {
         try {
             for (int i = 0; i < celda.length; i++) {
                 for (int j = 0; j < celda[i].length; j++) {
@@ -115,10 +116,12 @@ public class Interfaz extends JFrame implements ActionListener {
             dispose();
         }
 
-        if (evento.getSource() == inicializar) {
+        if (evento.getSource() == llenar) {
             try {
-                controlador.inicializarJuego(dimensiones);
+                controlador.llenarJuego();
                 actualizarTablero();
+                llenar.setEnabled(false);
+                llenar.setText("Esperando...");
             } catch (RemoteException ex) {
                 Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -126,9 +129,13 @@ public class Interfaz extends JFrame implements ActionListener {
 
         if (evento.getSource() == avanzarSecuencial) {
             try {
-                controlador.avanzarSecuencial();
-                actualizarTablero();
-                tiempoSecuencial.setText("Tiempo: " + controlador.getTiempo() + " ms");
+                if (controlador.listo()) {
+                    controlador.avanzarSecuencial();
+                    actualizarTablero();
+                    tiempoSecuencial.setText("Tiempo: " + controlador.getTiempo() + " ms");
+                } else
+                    JOptionPane.showMessageDialog(null, "Esperando al otro usuario");
+
             } catch (RemoteException ex) {
                 Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -136,9 +143,12 @@ public class Interfaz extends JFrame implements ActionListener {
 
         if (evento.getSource() == avanzarJorkJoin) {
             try {
-                controlador.avanzarJorkJoin();
-                actualizarTablero();
-                tiempoJorkJoin.setText("Tiempo: " + controlador.getTiempo() + " ms");
+                if (controlador.listo()) {
+                    controlador.avanzarJorkJoin();
+                    actualizarTablero();
+                    tiempoJorkJoin.setText("Tiempo: " + controlador.getTiempo() + " ms");
+                } else
+                    JOptionPane.showMessageDialog(null, "Esperando al otro usuario");
             } catch (RemoteException ex) {
                 Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -146,9 +156,12 @@ public class Interfaz extends JFrame implements ActionListener {
 
         if (evento.getSource() == avanzarExecutor) {
             try {
-                controlador.avanzarExecutor();
-                actualizarTablero();
-                tiempoExecutor.setText("Tiempo: " + controlador.getTiempo() + " ms");
+                if (controlador.listo()) {
+                    controlador.avanzarJorkJoin();
+                    actualizarTablero();
+                    tiempoExecutor.setText("Tiempo: " + controlador.getTiempo() + " ms");
+                } else
+                    JOptionPane.showMessageDialog(null, "Esperando al otro usuario");
             } catch (RemoteException ex) {
                 Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
             }

@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.rmi.RemoteException;
 
 public class NuevoJuego extends JFrame implements ActionListener {
     private Controlador controlador;
@@ -40,16 +41,20 @@ public class NuevoJuego extends JFrame implements ActionListener {
         if (evento.getSource() == crear) {
             try{
                 int tam = Integer.parseInt(dimencionesTablero.getText());
-
                 if (tam <= 100) {
+                    if (tam % 2 != 0)
+                        tam++;
                     new Interfaz(tam, controlador);
-                    dispose();
+                    controlador.inicializarJuego(tam);
+                    this.dispose();
                 } else {
                     JOptionPane.showMessageDialog(null, "El tamaño de la matriz, no puede superar las 100 celdas");
                 }
 
             }catch(NumberFormatException nfe){
                 JOptionPane.showMessageDialog(null, "Error, no es un valor numerico");
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
             }
         }
     }

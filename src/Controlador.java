@@ -6,6 +6,8 @@ public interface Controlador extends Remote {
 
     void inicializarJuego(int dimensiones) throws RemoteException;
 
+    void llenarJuego() throws RemoteException;
+
     void avanzarSecuencial() throws RemoteException;
 
     void avanzarJorkJoin() throws RemoteException;
@@ -13,4 +15,6 @@ public interface Controlador extends Remote {
     void avanzarExecutor() throws RemoteException;
 
     long getTiempo() throws RemoteException;
+
+    boolean listo() throws RemoteException;
 }

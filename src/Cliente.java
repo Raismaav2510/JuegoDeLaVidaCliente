@@ -1,6 +1,3 @@
-import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -17,7 +14,7 @@ public class Cliente {
         try {
             System.setProperty("java.rmi.server.hostname", ipLocal);
             Registry registry = LocateRegistry.getRegistry(ipServidor, puerto);
-            Controlador controlador = (Controlador) registry.lookup("NumerosPrimos");
+            Controlador controlador = (Controlador) registry.lookup("JuegoDeLaVida");
             NuevoJuego interfaz = new NuevoJuego(controlador);
             interfaz.setVisible(true);
         } catch (RemoteException e) {
